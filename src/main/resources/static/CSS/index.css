@@ -1,0 +1,36 @@
+
+.info-tabel-div{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+h3{
+    font-family: 'Muli', sans-serif;
+    font-weight: 800;
+    font-size: 2em;
+    margin-bottom: 3px;
+}
+
+.info-tabel{
+    width: 50%;
+    font-family: 'Muli', sans-serif;
+    text-align: center;
+    font-weight: 550;
+    font-size: 1em;
+    font-style: italic;
+    border-collapse: collapse;
+
+}
+
+.info-cell{
+    border: dashed black 0px;
+    padding: 3px;
+    border-radius: 10%;
+}
+
+.the-button{
+    width: 60%;
+}
+

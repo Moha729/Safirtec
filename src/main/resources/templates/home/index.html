@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${title}">Title</title>
+    <link rel="stylesheet" href="/CSS/nav-bar.css">
+    <link rel="stylesheet" href="/CSS/index.css">
+    <style>
+
+        #calculation-grid{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            column-gap: 5%;
+            row-gap: 5%;
+            margin-left: 20%;
+            margin-right: 20%;
+            margin-bottom: 20px;
+            text-align: right;
+
+        }
+
+        #spending-grid{
+            display: flex;
+            justify-content: right;
+            flex-direction: column;
+        }
+
+        #income-grid{
+            display: flex;
+            align-items: flex-end;
+        }
+
+        #spending-info{
+            display: flex;
+            text-align: right;
+            justify-content: right;
+            flex-direction: column;
+        }
+
+
+    </style>
+</head>
+<body>
+<!--
+<header>
+    <nav>
+        <div class="nav-bar">
+            <div class="logo">
+                <a href="/" th:text="${homeButtonText}">HOME</a>
+            </div>
+            <ul>
+                <li><a href="/departments">Default</a></li>
+                <div class="dropdown">
+                    <li><a href="/">Default</a></li>
+                    <div class="dropdown-content">
+                        <a href="/baker">Default</a>
+                        <a href="/cashier">Default</a>
+                        <a href="/driver">Default</a>
+                    </div>
+                </div>
+                <li><a href="/show-customer">Default</a></li>
+                <li><a href="/show-product">Default</a></li>
+                <div class="dropdown">
+                    <li><a href="/">Help</a></li>
+                    <div class="dropdown-content">
+                        <a href="/show-orders">Default</a>
+                        <a href="/show-archived">Default</a>
+                    </div>
+                </div>
+                <li><a href=/logout>Log-in</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="welcometext">
+        <p th:text="${'Welcome ' + userName}">Welcome</p>
+    </div>
+</header>
+-->
+
+<div id="temporary-presentation">
+    <ul>
+        <li>SAFIR</li>
+    </ul>
+</div>
+
+<div class="info-tabel-div">
+
+    <h3 id="monthLabel">
+        - Month Year -
+    </h3>
+    <input id="monthLabelHidden" th:value="${currentMonth.monthIndex}" type="number" readonly hidden>
+    <input id="yearLabelHidden" th:value="${currentMonth.year}" type="number" readonly hidden>
+
+
+    <table class="info-tabel" id="monthsTabel">
+        <tr th:each="month : ${monthList}">
+            <td class="info-cell">
+                <a th:href="@{'/month/'+${month.id}+'/day'}">
+                    <div class="monthIndexLabel">
+                        - Month and Year -
+                    </div>
+                </a>
+                <input id="monthLabelinTableHidden" class="styleMonths" th:value="${month.monthIndex}" type="number"
+                       readonly hidden>
+                <input id="yearLabelinTableHidden" class="styleYears" th:value="${month.year}" type="number" readonly
+                       hidden>
+            </td>
+        </tr>
+        <tr>
+            <td class="info-cell">
+                <button class="the-button" id="new-month-button">New month</button>
+                <button id="hideMonthsAgain">^</button>
+
+                <div id="new-month-form">
+                    <form action="/post-month" method="post">
+                        <select name="monthIndex">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+
+                        <select name="year">
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                        </select>
+
+                        <input type="submit" value="Go">
+                    </form>
+                </div>
+<!--                    <form action="/post-month" method="post">
+                        <input type="number" name="monthIndex" id="newMonthMonthIndex">
+                        <input type="number" name="year" id="newMonthYear">
+                        <input type="submit" value="go" id="add-month">
+                    </form>-->
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="info-tabel-div">
+
+    <h3 id="dayLabel" th:text="${currentDay.dayIndex}">
+        - Day -
+    </h3>
+    <input id="dayLabelHidden" th:value="${currentDay.dayIndex}" type="number" readonly hidden>
+
+    <table class="info-tabel" id="daysTabel">
+        <tr th:each="day : ${monthsDays}">
+            <td class="info-cell">
+                <a th:href="@{'/month/'+${currentMonth.id}+'/day/'+${day.id}}">
+                    <div class="dayIndexLabel" th:value="${day.dayIndex}" th:text="${day.dayIndex}">
+                        - Day -
+                    </div>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="info-cell">
+                <button class="the-button" id="new-day-button">New day</button>
+
+                <button id="hideDaysAgain">^</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="new-day-form"> <!--style="border: black solid 2px"-->
+                    <form action="/post-day" method="post">
+                        <select name="month">
+                            <option th:each="dayMonth : ${monthList}"
+                                    th:text="${dayMonth.monthIndex + ' ' + dayMonth.year}"
+                                    th:value="${dayMonth.id}"></option>
+                        </select>
+
+                        <select name="dayIndex">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                        </select>
+
+                        <input type="submit" value="Go">
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div id="calculation-grid">
+    <div id="spending-grid">
+        <h4 id="labelForSpending">Spending</h4>
+
+        <div id="spending-info" style="text-align: right">
+            <table >
+            <tr th:each="spending : ${spendings}" >
+                    <td th:text="${spending.supplier}"></td>
+                    <td th:text="${spending.amount}"></td>
+                </tr>
+            </table>
+                <form action="/post-spending" method="post">
+                    <input readonly hidden type="number" name="day.id" th:value="${day.id}">
+                    <input type="text" name="supplier" style="width: 50%">
+                    <input type="number" name="amount" style="width: 30%">
+                    <input type="submit" value="go">
+                </form>
+        </div>
+    </div>
+    <div id="income-grid">
+        <div id="income-info">
+            <form action="/post-income" method="post">
+                <input type="number" name="day.id" th:value="${day.id}" readonly hidden>
+                <input type="number" name="amount" th:value="${income.amount}">
+                <input type="submit" value="go">
+            </form>
+        </div>
+    </div>
+    <div></div>
+    <div id="spending-total-grid">
+        <h4>Total spending</h4>
+        <div th:text="${totalSpending}"></div>
+    </div>
+    <div id="income-total-grid">
+        <h4 id="labelForIncome">Income</h4>
+        <div th:text="${income.amount}"></div>
+    </div>
+    <div id="difference-grid">
+        <h4>Difference</h4>
+        <div th:text="${difference}"></div>
+    </div>
+</div>
+
+<footer>
+<div>
+    <hr>
+</div>
+<div >
+    <p style="font-size: .5em;"> copyright Car.Mar.Corp</p></div>
+</footer>
+<script>
+
+    //set height
+    function resizeHeight(){
+
+        let playScreenIndexes = innerHeight * 1.2
+        innerHeight = innerHeight * 1.2
+        /*document.getElementById('frontScreen').style.height = innerHeight + 'px'
+        playScreen.style.height= playScreenIndexes  + 'px'
+        playScreen.style.width = playScreenIndexes + 'px'
+*/    }
+
+    resizeHeight()
+
+    /**
+     * This part is responsible for createing
+     * a new Month object with all its properties when clicked
+     */
+/*    document.getElementById('new-month-button').addEventListener('click', function (e){
+        e.preventDefault()
+        let newMonth = new Date()
+        document.getElementById('newMonthMonthIndex').value = newMonth.getMonth() + 1
+        document.getElementById('newMonthYear').value = newMonth.getFullYear()
+        document.getElementById('add-month').click()
+    }, false)*/
+
+/*
+    document.getElementById('new-month-button').onclick = function (){
+        location = "../../../new-month"
+    }
+*/
+
+
+
+
+    /**
+     * This part is responsible for hiding and displaying
+     * the months and days properties
+     */
+    let monthsTabel = document.getElementById('monthsTabel')
+    let monthLabel = document.getElementById('monthLabel')
+    let hideMonthsButton = document.getElementById('hideMonthsAgain')
+
+    let daysTabel = document.getElementById('daysTabel')
+    let dayLabel = document.getElementById('dayLabel')
+    let hideDaysButton = document.getElementById('hideDaysAgain')
+
+    let incomeInfo = document.getElementById('income-info')
+    let labelForIncome = document.getElementById('labelForIncome')
+
+    let spendingInfo = document.getElementById('spending-info')
+    let labelForSpending = document.getElementById('labelForSpending')
+
+    function hideTabel(tabel) {
+        tabel.style.display = 'none'
+    }
+
+    function displayTabel(label, tabel){
+        label.onclick = function (){
+            tabel.style.display = ''
+        }
+    }
+
+    function hideTableAgain(hideButton, tabel){
+        hideButton.onclick = function (){
+            tabel.style.display = 'none'
+        }
+    }
+    hideTabel(monthsTabel)
+
+    displayTabel(monthLabel, monthsTabel)
+
+    hideTabel(daysTabel)
+
+    displayTabel(dayLabel, daysTabel)
+
+    hideTableAgain(hideMonthsButton, monthsTabel)
+
+    hideTableAgain(hideDaysButton, daysTabel)
+
+    hideTabel(incomeInfo)
+    displayTabel(labelForIncome, incomeInfo)
+
+    hideTabel(spendingInfo)
+    displayTabel(labelForSpending, spendingInfo)
+    //Part finished
+
+
+    /**
+     * This part is reponsible for naming
+     * the months and days
+     * This part is yet unordered
+     */
+    let monthIndexLabel = document.getElementsByClassName('monthIndexLabel')
+    let styleMonths = document.getElementById('monthLabelinTableHidden').value
+
+    //style months
+
+    let monthInTable = document.getElementById('monthLabelinTableHidden').value
+
+    let yearInTable = document.getElementById('yearLabelinTableHidden').value
+
+    let monthIndexLabelLength = document.getElementsByClassName('monthIndexLabel').length
+    //alert(monthIndexLabelLength)
+
+    //Select month
+    let monthLabel1 = document.getElementById('monthLabelHidden').value
+
+    let yearLabel = document.getElementById('yearLabelHidden').value
+
+    //alert('month of '+monthLabel1)
+
+    let arrayOfMonthNames = ['January', 'February','March','April','May','June',
+        'July','August','September','October','November','December']
+
+    function nameMonthEnh(monthLabel1, yearLabel, monthLabel){
+        monthLabel.innerText = arrayOfMonthNames[monthLabel1 - 1] + ' ' + yearLabel
+    }
+    //All script here is about displaying the months
+    nameMonthEnh(monthLabel1, yearLabel, monthLabel)
+
+    let yearsArray = []
+    let monthsArray = []
+
+    for (let i = 0; i < monthIndexLabelLength; i++) {
+        let styleMonths2 = document.getElementsByClassName('styleMonths').item(i).value
+        let styleYears2 = document.getElementsByClassName('styleYears').item(i).value
+        monthsArray[i] = styleMonths2
+        yearsArray[i] = styleYears2
+    }
+
+    for (let i = 0; i < monthIndexLabelLength; i++) {
+        let displayMonthsStyled = document.getElementById('displayMonthsStyled')
+        nameMonthEnh(monthsArray[i], yearsArray[i], monthIndexLabel[i])
+
+    }
+    //naming the months mess finish scope
+
+
+    //Deploy-help scope
+    let newdayForm = document.getElementById('new-day-form')
+    let newDayButton = document.getElementById('new-day-button')
+
+    let newMonthForm = document.getElementById('new-month-form')
+    let newMonthButton = document.getElementById('new-month-button')
+
+    hideTabel(newdayForm)
+
+    displayTabel(newDayButton, newdayForm)
+
+    hideTabel(newMonthForm)
+
+    displayTabel(newMonthButton, newMonthForm)
+/*    document.getElementById('new-day-button').onclick = function (){
+        //location = "../../../new-day"
+
+    }*/
+
+
+</script>
+</body>
+</html>

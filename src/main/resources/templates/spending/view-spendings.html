@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<h2 th:text="${day.month.monthIndex + ' / ' + day.dayIndex}"></h2>
+
+<table>
+    <tr>
+        <h4>Spending</h4>
+    </tr>
+    <tr th:each="spending : ${spendings}">
+        <td th:text="${spending.supplier}"></td>
+        <td th:text="${spending.amount}"></td>
+    </tr>
+</table>
+
+<h4>Total spending</h4>
+<div th:text="${totalSpending}"></div>
+
+<h4>Income</h4>
+<div th:text="${income.amount}"></div>
+
+<h4>Difference</h4>
+<div th:text="${difference}"></div>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<form action="/post-spending" method="post">
+    <input readonly type="number" name="day.id" th:value="${day.id}">
+    <input type="text" name="supplier">
+    <input type="number" name="amount">
+    <input type="submit" value="go">
+</form>
+
+</body>
+</html>

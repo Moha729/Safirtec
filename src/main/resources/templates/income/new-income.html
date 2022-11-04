@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+
+<form action="/post-income" method="post">
+    <input type="number" name="day.id" th:value="${day.id}" readonly>
+    <input type="number" name="amount">
+    <input type="submit" value="go">
+</form>
+
+</body>
+</html>
