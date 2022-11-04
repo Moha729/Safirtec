@@ -24,7 +24,7 @@ public class Logic1Controller {
 
     private final ProgramStartupSettings service;
 
-    private final MonthController monthController;
+    public final MonthController monthController;
 
     //refactor back to private
     public final DayController dayController;
@@ -122,6 +122,7 @@ public class Logic1Controller {
 
     public List<Day> getAllDaysByMonthId(Month currentMonth) {
         return dayController.service.findAllById(currentMonth.getId());
+
     }
 
 }
