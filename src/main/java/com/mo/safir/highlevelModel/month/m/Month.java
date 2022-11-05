@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,7 +24,7 @@ public class Month {
     private int year;
 
     @OneToMany (mappedBy = "month")
-    private List<Day> days;
+    private List<Day> days = new ArrayList<>();
 
     public Month(int monthIndex, int year) {
         this.monthIndex = monthIndex;

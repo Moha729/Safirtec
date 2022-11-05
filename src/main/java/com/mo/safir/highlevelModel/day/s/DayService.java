@@ -33,12 +33,12 @@ public class DayService {
 
     private List<Day> getDayList(Long id) {
         List<Day> days = new ArrayList<>();
-/*        List<Day> allDays = new ArrayList<Day>();
+        List<Day> allDays = new ArrayList<Day>();
         if(fetchAll() != null){
         allDays = fetchAll();}
         else {
             System.out.println("Error creating empty list");}
-        renderDayList(id, days, allDays);*/
+        renderDayList(id, days, allDays);
         return days;
     }
 

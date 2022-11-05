@@ -19,15 +19,6 @@ public class HomeController {
 
     @GetMapping()
     public String getIndex (){
-        Month month2 = new Month();
-        month2.setDays(new ArrayList<Day>());
-        Day day2 = new Day();
-        day2.setDayIndex(0);
-        month2.getDays().add(day2);
-        month2.setMonthIndex(10);
-        logic1Controller.dayController.service.addNew(day2);
-        logic1Controller.monthController.service.addNew(month2);
-
         Month month = logic1Controller.getLastMonth();
         Day day = logic1Controller.getDay(month);
         return "redirect:/month/"+month.getId()+"/day/"+day.getId();

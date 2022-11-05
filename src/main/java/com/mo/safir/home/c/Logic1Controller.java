@@ -86,6 +86,13 @@ public class Logic1Controller {
     }
 
     public Month getLastMonth() {
+        //test to see if months is empty
+        if (months().isEmpty()){
+            Month month = new Month();
+            month.setId(1L);
+            month.setMonthIndex(1);
+            return month;
+        }
         return months().get(months().size() - 1);
     }
 
