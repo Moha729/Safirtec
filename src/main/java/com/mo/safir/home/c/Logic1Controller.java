@@ -4,11 +4,6 @@ import com.mo.safir.highlevelModel.day.c.DayController;
 import com.mo.safir.highlevelModel.day.m.Day;
 import com.mo.safir.highlevelModel.month.c.MonthController;
 import com.mo.safir.highlevelModel.month.m.Month;
-import com.mo.safir.home.s.ProgramStartupSettings;
-import com.mo.safir.midlevelModel.income.income.c.IncomeController;
-import com.mo.safir.midlevelModel.income.income.m.Income;
-import com.mo.safir.midlevelModel.spending.spending.c.SpendingController;
-import com.mo.safir.midlevelModel.spending.spending.m.Spending;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,17 +17,9 @@ import java.util.List;
 @Controller
 public class Logic1Controller {
 
-    private final ProgramStartupSettings service;
+    private final MonthController monthController;
 
-    public final MonthController monthController;
-
-    //refactor back to private
-    public final DayController dayController;
-
-    public final IncomeController incomeController;
-
-    public final SpendingController spendingController;
-
+    private final DayController dayController;
 
     private ArrayList<Day> days(){
         return (ArrayList<Day>) dayController.service.fetchAll();
@@ -46,38 +33,19 @@ public class Logic1Controller {
     @GetMapping("/month/{id}/day")
     public String getLastMonth(@PathVariable ("id") Long id){
         Month month = getMonthById(id);
-        Day day = getDay(month);
+        Day day = getLastDay(month);
         return "redirect:/month/"+id+"/day/"+day.getId();
     }
 
-    public void setLogic2Settings(Long dayId,Long monthId, Model model){
 
-        Month month = getMonthById(monthId);
-        Day day = getDay(month, dayId);
-
-        List<Spending> spendings = spendingController.service.findAllById(dayId);
-        model.addAttribute("day", day);
-        model.addAttribute("spendings", spendings);
-
-        Income income = incomeController.service.findByDayId(dayId);
-        model.addAttribute("income", income);
-
-        int totalSpending = 0;
-        for (int i = 0; i < spendings.size(); i++) {
-            totalSpending += spendings.get(i).getAmount();
-        }
-        model.addAttribute("totalSpending", totalSpending);
-
-        int difference = income.getAmount() - totalSpending;
-        model.addAttribute("difference", difference);
-    }
     public void setLogic1Settings(Long id, Long dayId, Model model) {
 
         Month currentMonth = getMonthById(id);
 
-        Day currentDay = getDay(currentMonth, dayId);
+        Day currentDay = getSpecificDay(currentMonth, dayId);
 
-        service.setAttributes(model);
+        //model.addAllAttributes(List<>)
+
 
         model.addAttribute("monthList", months());
         model.addAttribute("currentMonth", currentMonth);
@@ -86,13 +54,6 @@ public class Logic1Controller {
     }
 
     public Month getLastMonth() {
-        //test to see if months is empty
-        if (months().isEmpty()){
-            Month month = new Month();
-            month.setId(1L);
-            month.setMonthIndex(1);
-            return month;
-        }
         return months().get(months().size() - 1);
     }
 
@@ -101,42 +62,52 @@ public class Logic1Controller {
         return monthController.service.findById(id);
     }
 
-    public Day getDay(Month month) {
+    public Day getLastDay(Month month) {
         Day day;
-        if(month.getDays().size() == 0){
-            day = new Day();
-            day.setId(0L);
-            day.setDayIndex(0);
+        if(isDayListOfMonthNull(month)){
+            day = makeDay(month);
 
         } else {
-            day = month.getDays().get(month.getDays().size() - 1);
+            day = makeLastDay(month);
         }
         return day;
     }
 
-    public Day getDay(Month month, Long dayId){
-        Day day;
-        if (month.getDays().size() == 0){
-            day = new Day();
-            day.setId(0L);
-            day.setDayIndex(0);
+    private static Day makeLastDay(Month month) {
+        return month.getDays().get(month.getDays().size() - 1);
+    }
 
-        } else {
-            day = dayController.service.findById(dayId);
-        }
+    private static boolean isDayListOfMonthNull(Month month) {
+        return month.getDays().size() == 0;
+    }
+
+    private static Day makeDay( Month month) {
+        Day day;
+        day = new Day();
+        day.setId(0L);
+        day.setDayIndex(0);
+        day.setMonth(month);
         return day;
+    }
+
+    public Day getSpecificDay(Month month, Long dayId){
+        Day day;
+        if (isDayListOfMonthNull(month))
+            day = makeDay(month);
+
+         else
+            day = getDayById(dayId);
+
+        return day;
+    }
+
+    private Day getDayById(Long dayId) {
+        return dayController.service.findById(dayId);
     }
 
     public List<Day> getAllDaysByMonthId(Month currentMonth) {
-        return dayController.service.findAllById(currentMonth.getId());
+        return dayController.service.findAllDaysByMonthId(currentMonth.getId());
 
     }
 
 }
-/**
- * Man kunne overveje at oprette en ny kontroller, som kun
- * står for at håndtere måneder og dage, og sende og modtage
- * data fra hjemme-controlleren.
- * På denne måde kan hjemme-kontrolleren være åben over
- * at modtage data fra flere controller/kilder
- */

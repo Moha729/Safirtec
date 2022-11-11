@@ -27,34 +27,22 @@ public class DayService {
                 new RuntimeException("%s %d not found!".formatted("DAY:", id)));
     }
 
-    public List<Day> findAllById(Long id){
-        return getDayList(id);
+    public List<Day> findAllDaysByMonthId(Long monthId){
+        List<Day> newDaysList = new ArrayList<>();
+        List<Day> allDays = fetchAll();
+        getDaysByMonthId(monthId, newDaysList, allDays);
+        return newDaysList;
     }
 
-    private List<Day> getDayList(Long id) {
-        List<Day> days = new ArrayList<>();
-        List<Day> allDays = new ArrayList<Day>();
-        if(fetchAll() != null){
-        allDays = fetchAll();}
-        else {
-            System.out.println("Error creating empty list");}
-        renderDayList(id, days, allDays);
-        return days;
+    private static void getDaysByMonthId(Long monthId, List<Day> newDaysList, List<Day> allDays) {
+        for (int i = 0; i < allDays.size(); i++) {
+            if (isMonthIdMatch(monthId, allDays, i))
+                newDaysList.add(allDays.get(i));
+        }
     }
 
-    private void renderDayList(Long id, List<Day> days, List<Day> allDays) {
-        for (int i = 0; i < allDays.size(); i++)
-            validateMonth(id, days, allDays, i);
-
-    }
-
-    private void validateMonth(Long id, List<Day> days, List<Day> allDays, int i) {
-        if (getMonthId(i, allDays) == id)
-            days.add(allDays.get(i));
-    }
-
-    private Long getMonthId(int i, List<Day> allDays) {
-        return allDays.get(i).getMonth().getId();
+    private static boolean isMonthIdMatch(Long monthId, List<Day> allDays, int i) {
+        return allDays.get(i).getMonth().getId() == monthId;
     }
 
 }
