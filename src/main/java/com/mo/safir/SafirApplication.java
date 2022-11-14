@@ -20,7 +20,7 @@ public class SafirApplication {
         return args -> {
             boolean isUsersEmpty = users.fetchAll().isEmpty();
             if (isUsersEmpty){
-            users.addNew(new User("user", encoder.encode("${Mo_pass}"),"ROLE_USER"));
+            users.addNew(new User("user", encoder.encode(System.getenv("MO_PASS")),"ROLE_USER"));
             }
 //            users.save(new User("user", encoder.encode("${Mo_pass}"),"ROLE_USER"));
 //            users.save(new User("admin",encoder.encode("${Mo_pass}"),"ROLE_USER,ROLE_ADMIN"));
